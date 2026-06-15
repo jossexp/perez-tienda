@@ -3,600 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Boutique App FullScreen</title>
+    <title>FAX_URBAN</title>
     <style>
         /* --- ANIMACIONES --- */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes cartBump { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+        @keyframes imageSlideshow { 0% { opacity: 0; transform: scale(1.05); } 8% { opacity: 1; } 33% { opacity: 1; } 41% { opacity: 0; transform: scale(1); } 100% { opacity: 0; } }
 
-        @keyframes cartBump {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
+        html, body { width: 100%; height: 100%; overflow: hidden; margin: 0; padding: 0; background-color: #0f0c20; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #2d3748; -webkit-font-smoothing: antialiased; }
+        .container { width: 100%; height: 100%; background-color: rgba(255, 255, 255, 0.98); display: flex; flex-direction: column; position: relative; overflow: hidden; }
+        .scroll-hidden { overflow-y: auto; scrollbar-width: none; -ms-overflow-style: none; flex: 1; }
+        .scroll-hidden::-webkit-scrollbar { display: none; }
 
-        @keyframes imageSlideshow {
-            0% { opacity: 0; transform: scale(1.05); }
-            8% { opacity: 1; }
-            33% { opacity: 1; }
-            41% { opacity: 0; transform: scale(1); }
-            100% { opacity: 0; }
-        }
-
-        /* --- CONFIGURACIÓN DE PANTALLA COMPLETA SIN SCROLL DEL SITIO --- */
-        html, body {
-            width: 100%;
-            height: 100%;
-            overflow: hidden; 
-            margin: 0;
-            padding: 0;
-            background-color: #0f0c20;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            color: #2d3748;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .container {
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.98);
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* --- OCULTACIÓN GLOBAL DE BARRAS DE SCROLL INTERNAS --- */
-        .scroll-hidden {
-            overflow-y: auto;
-            scrollbar-width: none; 
-            -ms-overflow-style: none; 
-        }
-        .scroll-hidden::-webkit-scrollbar {
-            display: none; 
-        }
-
-        /* --- PANTALLA DE BIENVENIDA (100% EN PANTALLA) --- */
-        #screen-welcome {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 99;
-            background: #000;
-            overflow: hidden;
-        }
-
-        .slideshow-back {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 1;
-        }
-
-        .slide-img {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-size: cover;
-            background-position: center;
-            opacity: 0;
-            animation: imageSlideshow 15s infinite ease-in-out;
-        }
-
+        #screen-welcome { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 99; background: #000; overflow: hidden; }
+        .slideshow-back { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; }
+        .slide-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; opacity: 0; animation: imageSlideshow 15s infinite ease-in-out; }
         .slide-img:nth-child(1) { background-image: url('https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200'); animation-delay: 0s; }
         .slide-img:nth-child(2) { background-image: url('https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200'); animation-delay: 5s; }
         .slide-img:nth-child(3) { background-image: url('https://images.unsplash.com/photo-1479064555552-3ef4979f8908?w=1200'); animation-delay: 10s; }
-
-        .welcome-dark-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(135deg, rgba(15, 12, 32, 0.85) 0%, rgba(118, 75, 162, 0.4) 100%);
-            backdrop-filter: blur(5px);
-            z-index: 2;
-        }
-
-        .welcome-content {
-            position: relative;
-            z-index: 3;
-            color: #ffffff;
-            text-align: center;
-            padding: 24px;
-            max-width: 600px;
-            animation: fadeInUp 0.8s ease forwards;
-        }
-
+        .welcome-dark-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(15, 12, 32, 0.85) 0%, rgba(118, 75, 162, 0.4) 100%); backdrop-filter: blur(5px); z-index: 2; }
+        .welcome-content { position: relative; z-index: 3; color: #ffffff; text-align: center; padding: 24px; max-width: 600px; animation: fadeInUp 0.8s ease forwards; }
         .welcome-content h1 { color: #ffffff; font-size: 34px; font-weight: 700; margin-bottom: 15px; text-shadow: 0 2px 10px rgba(0,0,0,0.4); }
         .welcome-content p { color: #e2e8f0; font-size: 16px; margin-bottom: 25px; line-height: 1.6; text-shadow: 0 1px 5px rgba(0,0,0,0.4); }
 
-        /* --- ENVOLTORIO PRINCIPAL DE LA TIENDA --- */
-        .main-content-padding {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 16px;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        @media (min-width: 1024px) {
-            .main-content-padding { padding: 30px 80px; }
-            .brand-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 25px !important; }
-            .products-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 25px !important; }
-            #screen-cart { max-width: 800px; margin: 0 auto; width: 100%; }
-        }
-
-        /* Barra de navegación superior */
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 14px;
-            border-bottom: 1px solid #edf2f7;
-            margin-bottom: 16px;
-            flex-shrink: 0; 
-        }
-
-        .cart-counter {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 8px 18px;
-            border-radius: 50px;
-            font-weight: 700;
-            font-size: 13px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+        .main-content-padding { flex: 1; display: flex; flex-direction: column; padding: 16px; height: 100%; overflow: hidden; }
+        @media (min-width: 1024px) { .main-content-padding { padding: 30px 80px; } .brand-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 25px !important; } .products-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 25px !important; } #screen-cart { max-width: 800px; margin: 0 auto; width: 100%; } }
+        
+        .cart-header { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid #edf2f7; margin-bottom: 16px; flex-shrink: 0; }
+        .cart-counter { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 8px 18px; border-radius: 50px; font-weight: 700; font-size: 13px; cursor: pointer; box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3); transition: transform 0.2s, box-shadow 0.2s; }
         .bump { animation: cartBump 0.3s ease-out; }
-
-        /* Estructura de pantallas internas */
-        .screen {
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-            width: 100%;
-            animation: fadeInUp 0.4s ease forwards;
-        }
+        .screen { display: flex; flex-direction: column; height: 100%; width: 100%; overflow: hidden; animation: fadeInUp 0.4s ease forwards; }
         .hidden { display: none !important; }
-
         h2 { font-size: 24px; color: #1a202c; margin-bottom: 8px; font-weight: 700; text-align: center; }
         .subtitle { color: #718096; font-size: 14px; text-align: center; margin-bottom: 20px; }
-
-        /* --- BOTONES EXCLUSIVOS DE FLUJO LÍQUIDO --- */
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 51%, #667eea 100%);
-            background-size: 200% auto;
-            color: white;
-            border: none;
-            padding: 15px 32px;
-            border-radius: 50px;
-            font-size: 13px;
-            font-weight: 700;
-            letter-spacing: 1.2px;
-            text-transform: uppercase;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-            width: 100%;
-            max-width: 280px;
-            display: block;
-            margin: 0 auto;
-            flex-shrink: 0;
-        }
+        button { background: linear-gradient(135deg, #667eea 0%, #764ba2 51%, #667eea 100%); background-size: 200% auto; color: white; border: none; padding: 15px 32px; border-radius: 50px; font-size: 13px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; cursor: pointer; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); width: 100%; max-width: 280px; display: block; margin: 0 auto; flex-shrink: 0; }
         button:hover { background-position: right center; transform: translateY(-2px); box-shadow: 0 8px 22px rgba(118, 75, 162, 0.45); }
 
-        /* --- SECCIÓN DE MARCAS CONFIGURADA CON COLORES CORPORATIVOS --- */
-        .brand-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
-            padding-bottom: 20px;
-        }
-
-        .brand-card {
-            position: relative;
-            height: 140px;
-            border-radius: 16px;
-            overflow: hidden;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-            transition: transform 0.3s ease, box-shadow 0.3s;
-            background-size: cover;
-            background-position: center;
-        }
+        .brand-grid { display: grid; grid-template-columns: 1fr; gap: 14px; padding-bottom: 20px; }
+        .brand-card { position: relative; height: 140px; border-radius: 16px; overflow: hidden; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.06); transition: transform 0.3s ease, box-shadow 0.3s; background-size: cover; background-position: center; }
         
-        .brand-card-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.78); /* Base clara traslúcida estilo glassmorphism */
-            display: flex;
-            align-items: center; 
-            justify-content: center; 
-            padding: 16px;
-            transition: background 0.3s ease, backdrop-filter 0.3s ease;
-            backdrop-filter: blur(2px);
-        }
+        .brand-card-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255, 255, 255, 0.78); display: flex; align-items: center; justify-content: center; padding: 16px; transition: background 0.3s ease, backdrop-filter 0.3s ease; backdrop-filter: blur(2px); }
+        .brand-card span { font-size: 22px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; text-shadow: 0 1px 2px rgba(255,255,255,0.5); transition: transform 0.3s ease; }
         
-        .brand-card span { 
-            font-size: 22px; 
-            font-weight: 800; 
-            letter-spacing: 1.5px; 
-            text-transform: uppercase;
-            text-shadow: 0 1px 2px rgba(255,255,255,0.5);
-            transition: transform 0.3s ease;
-        }
-
+        /* HOVER: AQUÍ ESTÁ EL CAMBIO PARA ACLARAR EL FONDO */
         .brand-card:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15); }
-        .brand-card:hover span { transform: scale(1.06); }
+        .brand-card:hover .brand-card-overlay { background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(0px); }
 
-        /* Estilos específicos por marca */
-        .brand-tommy span { color: #00234e; } /* Azul Tommy */
-        .brand-tommy:hover .brand-card-overlay { background: rgba(0, 35, 78, 0.1); backdrop-filter: blur(0px); }
-
-        .brand-calvin span { color: #000000; } /* Negro Calvin */
-        .brand-calvin:hover .brand-card-overlay { background: rgba(0, 0, 0, 0.08); backdrop-filter: blur(0px); }
-
-        .brand-columbia span { color: #0072bc; } /* Azul Columbia */
-        .brand-columbia:hover .brand-card-overlay { background: rgba(0, 114, 188, 0.1); backdrop-filter: blur(0px); }
-
-
-        /* --- SECCIÓN DE PRODUCTOS --- */
-        .products-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 16px;
-            padding-bottom: 20px;
-        }
-        @media (min-width: 440px) and (max-width: 1023px) {
-            .products-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        .product-card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.01);
-            transition: all 0.25s ease;
-        }
+        .products-grid { display: grid; grid-template-columns: 1fr; gap: 16px; padding-bottom: 10px; }
+        @media (min-width: 440px) and (max-width: 1023px) { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+        .product-card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; align-items: center; box-shadow: 0 4px 8px rgba(0,0,0,0.01); transition: all 0.25s ease; }
         .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.06); border-color: #cbd5e0; }
         .product-img { width: 100%; height: 170px; object-fit: cover; border-radius: 12px; }
         .product-title { font-size: 13px; font-weight: 600; margin: 10px 0 4px 0; height: 38px; overflow: hidden; text-align: center; }
         .product-price { font-size: 16px; font-weight: 700; color: #2b6cb0; margin-bottom: 10px; }
-        
-        .btn-add-cart {
-            background: #1a202c; padding: 11px 14px; font-size: 11px; border-radius: 8px; width: 100%; box-shadow: none; text-transform: uppercase;
-        }
+        .btn-add-cart { background: #1a202c; padding: 11px 14px; font-size: 11px; border-radius: 8px; width: 100%; box-shadow: none; text-transform: uppercase; }
         .btn-add-cart:hover { background: #764ba2; }
 
-        /* --- COMPONENTES DEL CARRITO INTERNO --- */
-        .cart-items-wrapper {
-            padding-bottom: 15px;
-        }
-        .cart-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f8fafc;
-            padding: 12px;
-            border-radius: 14px;
-            margin-bottom: 10px;
-            border: 1px solid #e2e8f0;
-        }
+        .cart-item { display: flex; align-items: center; justify-content: space-between; background: #f8fafc; padding: 12px; border-radius: 14px; margin-bottom: 10px; border: 1px solid #e2e8f0; }
         .cart-item-img { width: 55px; height: 55px; object-fit: cover; border-radius: 8px; }
         .cart-item-details { flex-grow: 1; text-align: left; padding-left: 12px; }
         .cart-item-controls button { width: auto; padding: 6px 12px; font-size: 12px; border-radius: 8px; margin: 0 2px; background: #e2e8f0; color: #2d3748; box-shadow: none; }
-        .cart-item-controls button:hover { background: #cbd5e0; transform: none; }
-
-        .cart-total-box {
-            margin-top: 10px;
-            padding: 16px;
-            background: #edf2f7;
-            border-radius: 14px;
-            font-size: 18px;
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-            flex-shrink: 0;
-        }
-
-        /* --- TOAST --- */
-        .toast {
-            position: fixed;
-            bottom: -20px;
-            left: 50%;
-            transform: translate(-50%, 0);
-            background-color: #0f0c20;
-            color: white;
-            padding: 14px 28px;
-            border-radius: 50px;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.4);
-            font-size: 13px;
-            font-weight: 600;
-            z-index: 9999;
-            opacity: 0;
-            transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25), opacity 0.4s ease;
-            width: 85%;
-            max-width: 340px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
+        .cart-total-box { margin-top: 10px; padding: 16px; background: #edf2f7; border-radius: 14px; font-size: 18px; font-weight: 700; display: flex; justify-content: space-between; flex-shrink: 0; }
+        .toast { position: fixed; bottom: -20px; left: 50%; transform: translate(-50%, 0); background-color: #0f0c20; color: white; padding: 14px 28px; border-radius: 50px; box-shadow: 0 15px 30px rgba(0,0,0,0.4); font-size: 13px; font-weight: 600; z-index: 9999; opacity: 0; transition: bottom 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.25), opacity 0.4s ease; width: 85%; max-width: 340px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
         .toast.show { bottom: 30px; opacity: 1; }
     </style>
 </head>
 <body>
-
     <div id="toast-notification" class="toast"></div>
-
     <div class="container">
-        
-        <!-- PANTALLA 1: BIENVENIDA COMPLETA -->
         <div id="screen-welcome">
-            <div class="slideshow-back">
-                <div class="slide-img"></div>
-                <div class="slide-img"></div>
-                <div class="slide-img"></div>
-                <div class="welcome-dark-overlay"></div>
-            </div>
-            
-            <div class="welcome-content">
-                <h1>Atelier de Moda Premium</h1>
-                <p>Descubre colecciones de temporada minuciosamente seleccionadas de las marcas globales más icónicas.</p>
-                <button id="btn-next">Explorar Catálogos</button>
-            </div>
+            <div class="slideshow-back"> <div class="slide-img"></div> <div class="slide-img"></div> <div class="slide-img"></div> <div class="welcome-dark-overlay"></div> </div>
+            <div class="welcome-content"> <h1>FAX_URBAN</h1> <p>Descubre colecciones de temporada minuciosamente seleccionadas.</p> <button id="btn-next">Explorar Catálogos</button> </div>
         </div>
-
-        <!-- ENVOLTORIO DE TIENDA -->
         <div id="main-shop-wrapper" class="main-content-padding hidden">
-            
-            <!-- BARRA SUPERIOR CONSTANTE -->
-            <div id="main-cart-header" class="cart-header">
-                <span style="font-weight: 800; color: #1a202c; font-size: 16px; letter-spacing: 0.5px;">BOUTIQUE</span>
-                <div id="cart-widget" class="cart-counter" onclick="goToCartScreen()">🛒 Carrito: <span id="cart-count">0</span></div>
-            </div>
-
-            <!-- PANTALLA 2: SELECCIÓN DE MARCAS (COLORES EXCLUSIVOS) -->
+            <div id="main-cart-header" class="cart-header"> <span style="font-weight: 900; color: #1a202c; font-size: 18px; font-family: 'Impact', sans-serif; text-transform: uppercase;">FAX_URBAN</span> <div id="cart-widget" class="cart-counter" onclick="goToCartScreen()">🛒 Carrito: <span id="cart-count">0</span></div> </div>
             <div id="screen-brands" class="screen hidden">
                 <h2>Nuestras Firmas</h2>
-                <div class="subtitle">Selecciona una casa de diseño para desplegar sus piezas exclusivas:</div>
-                
                 <div class="brand-grid scroll-hidden">
-                    <!-- Tommy Hilfiger -->
-                    <div class="brand-card brand-tommy" style="background-image: url('https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=500');" onclick="openCatalog('Tommy Hilfiger')">
-                        <div class="brand-card-overlay"><span>Tommy Hilfiger</span></div>
-                    </div>
-                    <!-- Calvin Klein -->
-                    <div class="brand-card brand-calvin" style="background-image: url('https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500');" onclick="openCatalog('Calvin Klein')">
-                        <div class="brand-card-overlay"><span>Calvin Klein</span></div>
-                    </div>
-                    <!-- Columbia -->
-                    <div class="brand-card brand-columbia" style="background-image: url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500');" onclick="openCatalog('Columbia')">
-                        <div class="brand-card-overlay"><span>Columbia</span></div>
-                    </div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?w=500');" onclick="openCatalog('Tommy Hilfiger')"><div class="brand-card-overlay"><span>Tommy Hilfiger</span></div></div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1509631179647-0177331693ae?w=500');" onclick="openCatalog('Calvin Klein')"><div class="brand-card-overlay"><span>Calvin Klein</span></div></div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1523381210434-271e8be1f52b?w=500');" onclick="openCatalog('Lacoste')"><div class="brand-card-overlay"><span>Lacoste</span></div></div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=500');" onclick="openCatalog('Columbia')"><div class="brand-card-overlay"><span>Columbia</span></div></div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1593032465175-481ac7f401a0?w=500');" onclick="openCatalog('Hugo Boss')"><div class="brand-card-overlay"><span>Hugo Boss</span></div></div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=500');" onclick="openCatalog('Polo Ralph Lauren')"><div class="brand-card-overlay"><span>Polo Ralph Lauren</span></div></div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1518002171953-a080ee817e1f?w=500');" onclick="openCatalog('Adidas')"><div class="brand-card-overlay"><span>Adidas</span></div></div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500');" onclick="openCatalog('Nike')"><div class="brand-card-overlay"><span>Nike</span></div></div>
+                    <div class="brand-card" style="background-image: url('https://images.unsplash.com/photo-1542272604-787c3835535d?w=500');" onclick="openCatalog('Nautica')"><div class="brand-card-overlay"><span>Nautica</span></div></div>
                 </div>
             </div>
-
-            <!-- PANTALLA 3: CATÁLOGO DE PRODUCTOS -->
-            <div id="screen-catalog" class="screen hidden">
-                <h2 id="catalog-title">Marca</h2>
-                <div class="subtitle">Artículos exclusivos de alta costura disponibles:</div>
-                
-                <div id="catalog-content" class="products-grid scroll-hidden"></div>
-                
-                <button onclick="goToBrands()" style="background: #718096; margin-top: 15px; max-width: 200px;">← Volver</button>
-            </div>
-
-            <!-- PANTALLA 4: REVISIÓN DEL CARRITO -->
-            <div id="screen-cart" class="screen hidden">
-                <h2>Tu Selección</h2>
-                <div class="subtitle">Verifica tus prendas antes de proceder al despacho de tu pedido:</div>
-                
-                <div id="cart-items-container" class="cart-items-wrapper scroll-hidden"></div>
-                
-                <div class="cart-total-box">
-                    <span>Subtotal Neto:</span>
-                    <span id="cart-total-price">$0.00</span>
-                </div>
-
-                <button onclick="checkoutWhatsApp()" style="background: linear-gradient(135deg, #128c7e 0%, #25d366 51%, #128c7e 100%); margin-top: 15px; max-width: 100%;">
-                    🟢 Enviar Orden por WhatsApp
-                </button>
-                <button onclick="goToBrands()" style="background: #718096; margin-top: 10px; max-width: 200px;">
-                    Volver a Tienda
-                </button>
-            </div>
-
+            <div id="screen-catalog" class="screen hidden"> <h2 id="catalog-title">Marca</h2> <div class="catalog-scroll-wrapper scroll-hidden"> <div id="catalog-content" class="products-grid"></div> <div style="padding: 24px 0 16px 0; text-align: center;"><button onclick="goToBrands()" style="background: #718096; max-width: 220px;">← Volver</button></div> </div> </div>
+            <div id="screen-cart" class="screen hidden"> <h2>Tu Selección</h2> <div class="cart-scroll-wrapper scroll-hidden"> <div id="cart-items-container"></div> <div class="cart-total-box"> <span>Subtotal:</span> <span id="cart-total-price">$0.00</span> </div> <button onclick="checkoutWhatsApp()" style="background: linear-gradient(135deg, #128c7e 0%, #25d366 51%, #128c7e 100%); margin-top: 15px;">🟢 Enviar por WhatsApp</button> <div style="padding: 16px 0; text-align: center;"><button onclick="goToBrands()" style="background: #718096; max-width: 220px;">Volver</button></div> </div> </div>
         </div>
-
     </div>
-
     <script>
-        // --- LOGÍSTICA DE PERSISTENCIA ---
         let cart = JSON.parse(localStorage.getItem('tienda_premium_cart')) || []; 
         let toastTimeout;
-
-        function syncLocalStorage() {
-            localStorage.setItem('tienda_premium_cart', JSON.stringify(cart));
-        }
-
-        // --- CATÁLOGOS DE PRODUCTOS ---
         const brandProducts = {
-            'Tommy Hilfiger': [
-                { name: 'Camisa Polo Classic Blue', price: 45.00, img: 'https://images.unsplash.com/photo-1581655353564-df123a1eb820?w=400' },
-                { name: 'Jeans Denim Slim Fit', price: 89.90, img: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400' },
-                { name: 'Gorra Bordada Navy', price: 29.00, img: 'https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=400' },
-                { name: 'Chaqueta Casual Bomber', price: 120.00, img: 'https://images.unsplash.com/photo-1551028719-00167b16eac5?w=400' }
-            ],
-            'Calvin Klein': [
-                { name: 'Camiseta Minimalist Black', price: 35.00, img: 'https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400' },
-                { name: 'Bóxer Brief Pack x3', price: 42.00, img: 'https://images.unsplash.com/photo-1562157873-818bc0726f68?w=400' },
-                { name: 'Sudadera Monogram Grey', price: 75.00, img: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=400' }
-            ],
-            'Columbia': [
-                { name: 'Chaqueta Impermeable', price: 135.00, img: 'https://images.unsplash.com/photo-1548883354-7622d03aca27?w=400' },
-                { name: 'Pantalón de Montaña', price: 65.00, img: 'https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=400' },
-                { name: 'Mochila Trekking 30L', price: 55.00, img: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400' }
-            ]
+            'Nike': [ { name: 'Air Force 1 White', price: 115.00, img: 'URL_DE_TU_IMAGEN_AQUI' }, { name: 'Zapatillas Running', price: 90.00, img: 'URL_DE_TU_IMAGEN_AQUI' } ],
+            'Adidas': [ { name: 'Superstar Classic', price: 100.00, img: 'URL_DE_TU_IMAGEN_AQUI' } ],
+            'Tommy Hilfiger': [], 'Calvin Klein': [], 'Lacoste': [], 'Columbia': [], 'Hugo Boss': [], 'Polo Ralph Lauren': [], 'Nautica': []
         };
-
-        // --- CONTROL DEL CARRITO ---
-        function addToCart(name, price, img) {
-            const existingProduct = cart.find(item => item.name === name);
-            if (existingProduct) { existingProduct.quantity++; } 
-            else { cart.push({ name, price, img, quantity: 1 }); }
-
-            syncLocalStorage();
-            renderCartSummary();
-            showToast(`🛍️ Añadido: ${name}`);
-        }
-
-        function changeQuantity(name, amount) {
-            const product = cart.find(item => item.name === name);
-            if (!product) return;
-
-            product.quantity += amount;
-            if (product.quantity <= 0) { cart = cart.filter(item => item.name !== name); }
-
-            syncLocalStorage();
-            renderCartSummary();
-            if (!document.getElementById('screen-cart').classList.contains('hidden')) { buildCartScreen(); }
-        }
-
-        function renderCartSummary() {
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.getElementById('cart-count').innerText = totalItems;
-
-            const widget = document.getElementById('cart-widget');
-            widget.classList.remove('bump');
-            void widget.offsetWidth; 
-            widget.classList.add('bump');
-        }
-
-        function buildCartScreen() {
-            const container = document.getElementById('cart-items-container');
-            container.innerHTML = '';
-            let grandTotal = 0;
-
-            if (cart.length === 0) {
-                container.innerHTML = '<p style="margin: 40px 0; text-align:center; color:#718096;">Tu carrito está vacío.</p>';
-                document.getElementById('cart-total-price').innerText = '$0.00';
-                return;
-            }
-
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                grandTotal += itemTotal;
-
-                const row = document.createElement('div');
-                row.className = 'cart-item';
-                row.innerHTML = `
-                    <img src="${item.img}" class="cart-item-img">
-                    <div class="cart-item-details">
-                        <div style="font-weight:700; font-size:14px; color:#1a202c;">${item.name}</div>
-                        <div style="color:#2b6cb0; font-size:13px; font-weight:700; margin-top:2px;">$${item.price.toFixed(2)} x ${item.quantity}</div>
-                    </div>
-                    <div class="cart-item-controls">
-                        <button onclick="changeQuantity('${item.name.replace(/'/g, "\\'")}', -1)">-</button>
-                        <button onclick="changeQuantity('${item.name.replace(/'/g, "\\'")}', 1)">+</button>
-                    </div>
-                `;
-                container.appendChild(row);
-            });
-
-            document.getElementById('cart-total-price').innerText = `$${grandTotal.toFixed(2)}`;
-        }
-
-        function checkoutWhatsApp() {
-            if (cart.length === 0) {
-                showToast("❌ El carrito está vacío");
-                return;
-            }
-
-            let message = "¡Hola! Deseo ordenar las siguientes prendas exclusive:\n\n";
-            let grandTotal = 0;
-
-            cart.forEach(item => {
-                const subtotal = item.price * item.quantity;
-                grandTotal += subtotal;
-                message += `▪️ *${item.name}* (Cant: ${item.quantity}) - $${subtotal.toFixed(2)}\n`;
-            });
-
-            message += `\n💵 *Total de la Orden:* $${grandTotal.toFixed(2)}`;
-            const phoneNumber = "+593 992791335"; 
-            window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
-        }
-
-        // --- SISTEMA DE NAVEGACIÓN ---
-        function clearAllScreens() {
-            document.getElementById('screen-welcome').classList.add('hidden');
-            document.getElementById('screen-brands').classList.add('hidden');
-            document.getElementById('screen-catalog').classList.add('hidden');
-            document.getElementById('screen-cart').classList.add('hidden');
-        }
-
-        document.getElementById('btn-next').addEventListener('click', () => {
-            document.getElementById('screen-welcome').classList.add('hidden');
-            document.getElementById('main-shop-wrapper').classList.remove('hidden');
-            document.getElementById('screen-brands').classList.remove('hidden');
-        });
-
-        function goToBrands() {
-            clearAllScreens();
-            document.getElementById('main-shop-wrapper').classList.remove('hidden');
-            document.getElementById('screen-brands').classList.remove('hidden');
-        }
-
-        function goToCartScreen() {
-            clearAllScreens();
-            buildCartScreen();
-            document.getElementById('main-shop-wrapper').classList.remove('hidden');
-            document.getElementById('screen-cart').classList.remove('hidden');
-        }
-
-        function openCatalog(brandName) {
-            clearAllScreens();
-            document.getElementById('main-shop-wrapper').classList.remove('hidden');
-            
-            const catalogScreen = document.getElementById('screen-catalog');
-            catalogScreen.classList.remove('hidden');
-            document.getElementById('catalog-title').innerText = `Colección ${brandName}`;
-
-            const contentDiv = document.getElementById('catalog-content');
-            contentDiv.innerHTML = '';
-
-            const products = brandProducts[brandName] || [];
-            products.forEach(product => {
-                const card = document.createElement('div');
-                card.className = 'product-card';
-                card.innerHTML = `
-                    <img src="${product.img}" alt="${product.name}" class="product-img">
-                    <div class="product-title">${product.name}</div>
-                    <div class="product-price">$${product.price.toFixed(2)}</div>
-                    <button class="btn-add-cart" onclick="addToCart('${product.name.replace(/'/g, "\\'")}', ${product.price}, '${product.img}')">
-                        Añadir al Carrito
-                    </button>
-                `;
-                contentDiv.appendChild(card);
-            });
-        }
-
-        function showToast(text) {
-            const toast = document.getElementById('toast-notification');
-            toast.innerText = text;
-            toast.classList.add('show');
-            clearTimeout(toastTimeout);
-            toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2000);
-        }
-
+        function syncLocalStorage() { localStorage.setItem('tienda_premium_cart', JSON.stringify(cart)); }
+        function addToCart(name, price, img) { const existingProduct = cart.find(item => item.name === name); if (existingProduct) { existingProduct.quantity++; } else { cart.push({ name, price, img, quantity: 1 }); } syncLocalStorage(); renderCartSummary(); showToast(`🛍️ Añadido: ${name}`); }
+        function changeQuantity(name, amount) { const product = cart.find(item => item.name === name); if (!product) return; product.quantity += amount; if (product.quantity <= 0) { cart = cart.filter(item => item.name !== name); } syncLocalStorage(); renderCartSummary(); if (!document.getElementById('screen-cart').classList.contains('hidden')) { buildCartScreen(); } }
+        function renderCartSummary() { const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0); document.getElementById('cart-count').innerText = totalItems; }
+        function buildCartScreen() { const container = document.getElementById('cart-items-container'); container.innerHTML = ''; let grandTotal = 0; if (cart.length === 0) { container.innerHTML = '<p style="text-align:center; color:#718096;">Tu carrito está vacío.</p>'; document.getElementById('cart-total-price').innerText = '$0.00'; return; } cart.forEach(item => { grandTotal += (item.price * item.quantity); const row = document.createElement('div'); row.className = 'cart-item'; row.innerHTML = `<img src="${item.img}" class="cart-item-img"><div class="cart-item-details"><div style="font-weight:700;">${item.name}</div><div style="color:#2b6cb0;">$${item.price.toFixed(2)} x ${item.quantity}</div></div><div class="cart-item-controls"><button onclick="changeQuantity('${item.name.replace(/'/g, "\\'")}', -1)">-</button><button onclick="changeQuantity('${item.name.replace(/'/g, "\\'")}', 1)">+</button></div>`; container.appendChild(row); }); document.getElementById('cart-total-price').innerText = `$${grandTotal.toFixed(2)}`; }
+        function checkoutWhatsApp() { if (cart.length === 0) { showToast("❌ Carrito vacío"); return; } let message = "¡Hola! Deseo ordenar:\n"; cart.forEach(i => { message += `▪️ ${i.name} (x${i.quantity}) - $${(i.price*i.quantity).toFixed(2)}\n`; }); message += `\n💵 Total: $${document.getElementById('cart-total-price').innerText}`; window.open(`https://wa.me/+593992791335?text=${encodeURIComponent(message)}`, '_blank'); }
+        function clearAllScreens() { document.getElementById('screen-welcome').classList.add('hidden'); document.getElementById('screen-brands').classList.add('hidden'); document.getElementById('screen-catalog').classList.add('hidden'); document.getElementById('screen-cart').classList.add('hidden'); }
+        document.getElementById('btn-next').addEventListener('click', () => { document.getElementById('screen-welcome').classList.add('hidden'); document.getElementById('main-shop-wrapper').classList.remove('hidden'); document.getElementById('screen-brands').classList.remove('hidden'); });
+        function goToBrands() { clearAllScreens(); document.getElementById('main-shop-wrapper').classList.remove('hidden'); document.getElementById('screen-brands').classList.remove('hidden'); }
+        function goToCartScreen() { clearAllScreens(); buildCartScreen(); document.getElementById('main-shop-wrapper').classList.remove('hidden'); document.getElementById('screen-cart').classList.remove('hidden'); }
+        function openCatalog(brandName) { clearAllScreens(); document.getElementById('main-shop-wrapper').classList.remove('hidden'); const catalogScreen = document.getElementById('screen-catalog'); catalogScreen.classList.remove('hidden'); document.getElementById('catalog-title').innerText = `Colección ${brandName}`; const contentDiv = document.getElementById('catalog-content'); contentDiv.innerHTML = ''; const products = brandProducts[brandName] || []; products.forEach(product => { const card = document.createElement('div'); card.className = 'product-card'; card.innerHTML = `<img src="${product.img}" class="product-img"><div class="product-title">${product.name}</div><div class="product-price">$${product.price.toFixed(2)}</div><button class="btn-add-cart" onclick="addToCart('${product.name.replace(/'/g, "\\'")}', ${product.price}, '${product.img}')">Añadir</button>`; contentDiv.appendChild(card); }); }
+        function showToast(text) { const toast = document.getElementById('toast-notification'); toast.innerText = text; toast.classList.add('show'); clearTimeout(toastTimeout); toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2000); }
         renderCartSummary();
     </script>
 </body>
